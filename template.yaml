@@ -1,10 +1,45 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
+Parameters:
+  StageName:
+    Type: String
+    Default: Prod
+    
 Resources:
   MoneyHandlerFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Runtime: java11
-      Handler: de.probstl.aws.MoneyHandler::handleRequest
+      Runtime: 'java11'
+      Handler: 'de.probstl.aws.MoneyHandler::handleRequest'
       Timeout: 60
-      CodeUri: ./target/lambda.jar
+      CodeUri: './target/lambda.jar'
+      Events:
+        ExplicitApi:
+          Type: 'HttpApi'
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: '/path'
+            TimeoutInMillis: 15000
+            PayloadFormatVersion: "2.0"
+            RouteSettings:
+              ThrottlingBurstLimit: 600
+
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: !Ref StageName
+      Tags:
+        Tag: Value
+      AccessLogSettings:
+        DestinationArn: !GetAtt AccessLogs.Arn
+        Format: $context.requestId
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 200
+      RouteSettings:
+        "GET /path":
+          ThrottlingBurstLimit: 500 # overridden in HttpApi Event
+      StageVariables:
+        StageVar: Value
+      FailOnWarnings: True
+
