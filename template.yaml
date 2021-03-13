@@ -4,7 +4,7 @@ Parameters:
   StageName:
     Type: String
     Default: Prod
-    
+
 Resources:
   MoneyHandlerFunction:
     Type: 'AWS::Serverless::Function'
@@ -43,3 +43,5 @@ Resources:
         StageVar: Value
       FailOnWarnings: True
 
+  AccessLogs:
+    Type: AWS::Logs::LogGroup
