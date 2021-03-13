@@ -4,7 +4,7 @@ Resources:
   de.probstl.aws.MoneyHandlerFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Runtime: java8
-      Handler: de.probstl.aws.de.probstl.aws.MoneyHandler::handleRequest
+      Runtime: java11
+      Handler: de.probstl.aws.MoneyHandler::handleRequest
       Timeout: 60
       CodeUri: ./target/lambda.jar
